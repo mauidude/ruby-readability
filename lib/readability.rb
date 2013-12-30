@@ -396,7 +396,7 @@ module Readability
       base_whitelist = @options[:tags] || %w[div p]
       # We'll add whitespace instead of block elements,
       # so a<br>b will have a nice space between them
-      base_replace_with_whitespace = %w[br hr h1 h2 h3 h4 h5 h6 dl dd ol li ul address blockquote center]
+      base_replace_with_whitespace = %w[br hr h1 h2 h3 h4 h5 h6 dl dd ol li ul address blockquote center] - base_whitelist
 
       # Use a hash for speed (don't want to make a million calls to include?)
       whitelist = Hash.new
