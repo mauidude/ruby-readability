@@ -373,7 +373,7 @@ module Readability
       end
     end
 
-    def sanitize(node, candidates, options = {})    
+    def sanitize(node, candidates, options = {})
       node.css("h1, h2, h3, h4, h5, h6").each do |header|
         header.remove if class_weight(header) < 0 || get_link_density(header) > 0.33
       end
@@ -419,7 +419,7 @@ module Readability
             if replace_with_whitespace[el.node_name]
               el.swap(Nokogiri::XML::Text.new(' ' << el.text << ' ', el.document))
             else
-              el.swap(Nokogiri::XML::Text.new(el.text, el.document))
+              el.replace(el.children)
             end
           end
         end
