@@ -121,10 +121,11 @@ module Readability
     end
 
     REGEXES = {
+        :blacklistCandidatesRe => /popupbody/i,
         :unlikelyCandidatesRe => /combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup/i,
         :okMaybeItsACandidateRe => /and|article|body|column|main|shadow/i,
         :positiveRe => /article|body|content|entry|hentry|main|page|pagination|post|text|blog|story/i,
-        :negativeRe => /combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|popup/i,
+        :negativeRe => /combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget/i,
         :divToPElementsRe => /<(a|blockquote|dl|div|img|ol|p|pre|table|ul)/i,
         :replaceBrsRe => /(<br[^>]*>[ \n\r\t]*){2,}/i,
         :replaceFontsRe => /<(\/?)font[^>]*>/i,
@@ -345,8 +346,10 @@ module Readability
 
     def remove_unlikely_candidates!
       @html.css("*").each do |elem|
+        next if ['html', 'body'].include?(elem.name)
         str = "#{elem[:class]}#{elem[:id]}"
-        if str =~ REGEXES[:unlikelyCandidatesRe] && str !~ REGEXES[:okMaybeItsACandidateRe] && (elem.name.downcase != 'html') && (elem.name.downcase != 'body')
+
+        if str =~ REGEXES[:blacklistCandidatesRe] || (str =~ REGEXES[:unlikelyCandidatesRe] && str !~ REGEXES[:okMaybeItsACandidateRe])
           debug("Removing unlikely candidate - #{str}")
           elem.remove
         end
